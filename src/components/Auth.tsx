@@ -9,8 +9,9 @@ import { Separator } from "./ui/separator";
 import { motion } from "motion/react";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { useAuth } from "./AuthContext";
+import { supabase } from "../supabaseClient";
 import aiIcon from "figma:asset/825f57ba1965160b6b03c77785086278398c9519.png";
 
 export function Auth() {
@@ -57,8 +58,8 @@ export function Auth() {
     
     try {
       await authSignup(signupForm.name, signupForm.email, signupForm.password);
-      toast.success("Account created successfully! Welcome to Evokestory.ai");
-      navigate("/dashboard");
+  toast.success("Account created successfully! Welcome to Evokestory.ai");
+  window.location.href = "https://evokestory-7mw5eoskc-evokestory.vercel.app";
     } catch (error) {
       toast.error("Failed to create account. Please try again.");
     } finally {
@@ -79,8 +80,8 @@ export function Auth() {
     
     try {
       await authLogin(loginForm.email, loginForm.password);
-      toast.success("Welcome back! Logging you in...");
-      navigate("/dashboard");
+    toast.success("Welcome back! Logging you in...");
+  window.location.href = "https://evokestory-7mw5eoskc-evokestory.vercel.app";
     } catch (error) {
       toast.error("Failed to login. Please check your credentials.");
     } finally {
@@ -89,23 +90,35 @@ export function Auth() {
   };
 
   // Handle Google OAuth
-  const handleGoogleAuth = () => {
+  const handleGoogleAuth = async () => {
+    setIsLoading(true);
     toast.info("Redirecting to Google...");
-    // In a real app, redirect to your OAuth endpoint
-    // window.location.href = "https://your-backend.com/auth/google";
-    setTimeout(() => {
-      toast.success("Connected with Google!");
-    }, 1000);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+  provider: 'google',
+  options: { redirectTo: 'https://evokestory-7mw5eoskc-evokestory.vercel.app' }
+      });
+      if (error) throw error;
+    } catch (error: any) {
+      toast.error(error.message || 'Google sign-in failed');
+      setIsLoading(false);
+    }
   };
 
   // Handle Apple OAuth
-  const handleAppleAuth = () => {
+  const handleAppleAuth = async () => {
+    setIsLoading(true);
     toast.info("Redirecting to Apple...");
-    // In a real app, redirect to your OAuth endpoint
-    // window.location.href = "https://your-backend.com/auth/apple";
-    setTimeout(() => {
-      toast.success("Connected with Apple!");
-    }, 1000);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+  provider: 'apple',
+  options: { redirectTo: 'https://evokestory-7mw5eoskc-evokestory.vercel.app' }
+      });
+      if (error) throw error;
+    } catch (error: any) {
+      toast.error(error.message || 'Apple sign-in failed');
+      setIsLoading(false);
+    }
   };
 
   return (
