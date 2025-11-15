@@ -44,7 +44,7 @@ export function Hero() {
             <Button 
               size="lg" 
               className="bg-foreground text-background hover:bg-foreground/90 group"
-              onClick={() => window.location.href = 'https://evokestory-7mw5eoskc-evokestory.vercel.app'}
+              onClick={() => window.location.href = 'https://evokestory-app.vercel.app'}
             >
               Start Writing for Free
               <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
